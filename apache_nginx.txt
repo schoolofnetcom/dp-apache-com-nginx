@@ -1,0 +1,50 @@
+
+#Instalação de dependencias
+sudo apt-get install ca-certificates apache2 libapache2-mod-php php-cli php php-gd php-imap php-ldap php-mysql php-soap php-xmlrpc zip unzip bzip2 unrar-free php-snmp php-curl php-json php-memcached php-dev php-mbstring php-apcu-bc -y
+
+#Vhost Nginx
+
+server {
+    listen   80;
+
+    root /var/www/;
+    index index.php index.html index.htm;
+
+    server_name example.com;
+
+    location / {
+    try_files $uri $uri/ /index.php;
+    }
+
+    location ~ \.php$ {
+
+    proxy_set_header X-Real-IP  $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header Host $host;
+    proxy_pass http://127.0.0.1:8080;
+
+     }
+
+     location ~ /\.ht {
+            deny all;
+    }
+}
+
+
+#Vhost Apache
+
+<VirtualHost 127.0.0.1:8080>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/
+        ErrorLog ${APACHE_LOG_DIR}/error.log 
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+location ~* ^.+.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|tar|mid|midi|wav|bmp|rtf|js)$ {
+            root    /srv/www/guiadopc.com.br/public_html;
+            expires 30d;
+        }
+
+location ~* ^.+\.(jpg|js|jpeg|png)$ {
+  root /some/where/on/your/disks;
+ }
